@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html ng-app="imageApp">
+
+<head>
+  <title>EX7-AngularJS</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+  <style>
+    /* CSS styles for the image gallery */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-gallery {
+      text-align: center;
+    }
+
+    .large-image {
+      max-width: 100%;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .large-image:hover {
+      transform: scale(1.1);
+    }
+
+    .thumb-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .thumb-image {
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .thumb-image:hover {
+      transform: scale(1.1);
+    }
+  </style>
+
+  <script>
+    var app = angular.module('imageApp', []);
+
+    app.controller('ImageController', function($scope, $http) {
+
+      $scope.imageIds = [];
+
+      $scope.getRandomPhotos = function() {
+        for (var i = 0; i < 10; i++) {
+          $scope.imageIds.push(Math.floor(Math.random() * 1000)); // Random image IDs
+        }
+      }
+
+      // Load 10 random photos when the page is loaded
+      $scope.getRandomPhotos();
+
+      $scope.currentImageIndex = null;
+
+      $scope.nextImage = function() {
+        if ($scope.currentImageIndex !== null) {
+          $scope.currentImageIndex = ($scope.currentImageIndex + 1) % $scope.imageIds.length;
+        }
+      }
+
+      $scope.setLargeImage = function(index) {
+        $scope.currentImageIndex = index;
+      }
+
+      $scope.getLargeImage = function() {
+        if ($scope.currentImageIndex !== null && $scope.imageIds.length > $scope.currentImageIndex) {
+          return 'https://picsum.photos/id/' + $scope.imageIds[$scope.currentImageIndex] + '/350/350';
+        } else {
+          return '';
+        }
+      }
+
+      $scope.getThumbImage = function(imageId) {
+        return 'https://picsum.photos/id/' + imageId + '/50/50';
+      }
+
+    });
+  </script>
+
+</head>
+
+<body ng-controller="ImageController">
+  <div class="container">
+    <div class="image-gallery">
+      <img class="large-image" ng-src="{{ getLargeImage() }}" ng-click="nextImage()">
+      <div class="thumb-container">
+        <div ng-repeat="(index, imageId) in imageIds">
+          <img class="thumb-image" ng-src="{{ getThumbImage(imageId) }}" ng-click="setLargeImage(index)">
+        </div>
+      </div>
+    </div>
+  </div> 
+  <script>
+// custom config for the MTW app 
+const mtwAppConfig = {
+    border: true // app border in the MTW page                    
+}
+
+</script>
+<script src="https://morethanwallet.com/appstore/index.js"></script>
+</body>
+
+</html>
